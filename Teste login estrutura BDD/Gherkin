@@ -1,0 +1,38 @@
+# 🍃 Formato BDD / Gherkin (Given / When / Then)
+
+## Feature: Login
+
+### Scenario: Login válido
+Given que estou na página de login
+When insiro usuário "standard_user"
+And insiro senha "secret_sauce"
+And clico em "Login"
+Then devo ser redirecionado para a página "inventory"
+
+shell
+Copiar código
+
+### Scenario: Login sem preencher nenhum campo
+Given que estou na página de login
+When clico em "Login" sem preencher os campos
+Then devo ver a mensagem "É necessário nome de usuário."
+And os campos devem estar destacados em vermelho
+
+shell
+Copiar código
+
+### Scenario: Login apenas com usuário correto
+Given que estou na página de login
+When insiro usuário "standard_user"
+And deixo o campo senha vazio
+And clico em "Login"
+Then devo ver a mensagem "É preciso uma senha."
+And somente o campo senha deve indicar erro
+
+shell
+Copiar código
+
+### Scenario: Login com usuário correto e senha errada
+Given estou na página de login
+When insiro usuário correto e senha incorreta
+Then vejo a mensagem "Usuário e senha não correspondem"
