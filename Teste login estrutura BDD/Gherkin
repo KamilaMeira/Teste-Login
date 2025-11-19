@@ -1,38 +1,71 @@
-# 🍃 Formato BDD / Gherkin (Given / When / Then)
+Feature: Teste de Login Simples
 
-## Feature: Login
-
-### Scenario: Login válido
-Given que estou na página de login
-When insiro usuário "standard_user"
-And insiro senha "secret_sauce"
+Scenario: Login válido (CT001)
+Given que estou na página https://www.saucedemo.com/
+When preencho o nome de usuário "standard_user"
+And preencho a senha "secret_sauce"
 And clico em "Login"
-Then devo ser redirecionado para a página "inventory"
+Then devo estar logado e ver a página "inventory"
+And clico no nome do usuário e escolho "Logout"
+Then devo estar desconectado e voltar para a página de login
+And não devo ter acesso ao conteúdo restrito
 
-shell
-Copiar código
-
-### Scenario: Login sem preencher nenhum campo
-Given que estou na página de login
-When clico em "Login" sem preencher os campos
-Then devo ver a mensagem "É necessário nome de usuário."
+Scenario: Login sem preencher dados (CT002 - cenário 1)
+Given que estou na página https://www.saucedemo.com/
+When clico em "Login" sem preencher nenhum campo
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem de erro "É necessário nome de usuário."
 And os campos devem estar destacados em vermelho
 
-shell
-Copiar código
+Scenario: Login com usuário incorreto e senha vazia (CT002 - cenário 2)
+Given que estou na página https://www.saucedemo.com/
+When preencho o nome de usuário incorreto
+And clico em "Login"
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem de erro "É preciso uma senha."
+And o campo senha deve estar destacado em vermelho
 
-### Scenario: Login apenas com usuário correto
-Given que estou na página de login
-When insiro usuário "standard_user"
+Scenario: Login com usuário correto e senha vazia (CT002 - cenário 3)
+Given que estou na página https://www.saucedemo.com/
+When preencho o nome de usuário "standard_user"
 And deixo o campo senha vazio
 And clico em "Login"
-Then devo ver a mensagem "É preciso uma senha."
-And somente o campo senha deve indicar erro
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem de erro "É preciso uma senha."
+And somente o campo senha deve estar destacado em vermelho
 
-shell
-Copiar código
+Scenario: Login com senha incorreta e usuário vazio (CT002 - cenário 4)
+Given que estou na página https://www.saucedemo.com/
+When preencho a senha incorreta
+And clico em "Login"
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem "É necessário nome de usuário."
+And o campo usuário deve estar destacado em vermelho
 
-### Scenario: Login com usuário correto e senha errada
-Given estou na página de login
-When insiro usuário correto e senha incorreta
-Then vejo a mensagem "Usuário e senha não correspondem"
+Scenario: Login com senha correta e usuário vazio (CT002 - cenário 5)
+Given que estou na página https://www.saucedemo.com/
+When preencho a senha correta
+And clico em "Login"
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem "É necessário nome de usuário."
+And o campo usuário deve estar destacado em vermelho
+
+Scenario: Login com usuário correto e senha errada (CT002 - cenário 6)
+Given que estou na página https://www.saucedemo.com/
+When preencho o usuário "standard_user"
+And preencho uma senha incorreta
+And clico em "Login"
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem "O nome de usuário e a senha não correspondem a nenhum usuário neste serviço."
+And os campos usuário e senha devem estar destacados em vermelho
+And deve aparecer um ícone de erro ao lado da mensagem
+
+Scenario: Login com usuário incorreto e senha correta (CT002 - cenário 7)
+Given que estou na página https://www.saucedemo.com/
+When preencho o usuário incorreto
+And preencho a senha correta
+And clico em "Login"
+Then não devo ter acesso ao conteúdo
+And devo ver a mensagem "O nome de usuário e a senha não correspondem a nenhum usuário neste serviço."
+And os campos usuário e senha devem estar destacados em vermelho
+And deve aparecer um ícone de erro ao lado da mensagem
